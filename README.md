@@ -5,17 +5,6 @@ Information about the fake news challenge can be found on [FakeChallenge.org](ht
 This repository contains code that reads the dataset, extracts some simple features, trains a cross-validated model and
 performs an evaluation on a hold-out set of data.
 
-Credit:
-* Byron Galbraith (Github: @bgalbraith, Slack: @byron)
-* Humza Iqbal (GitHub: @humzaiqbal, Slack: @humza)
-* HJ van Veen (GitHub/Slack: @mlwave)
-* Delip Rao (GitHub: @delip, Slack: @dr)
-* James Thorne (GitHub/Slack: @j6mes)
-* Yuxi Pan (GitHub: @yuxip, Slack: @yuxipan)
-
-## Questions / Issues
-Please raise questions in the slack group [fakenewschallenge.slack.com](https://fakenewschallenge.slack.com)
-
 ## Getting Started
 The FNC dataset is inlcuded as a submodule and can be FNC Dataset is included as a submodule. You should download the fnc-1 dataset by running the following commands. This places the fnc-1 dataset into the folder fnc-1/
 
