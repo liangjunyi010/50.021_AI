@@ -1,44 +1,32 @@
 from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.metrics.pairwise import cosine_similarity
 import numpy as np
+from tqdm import tqdm
 
 
 class TfidfFeatureGenerator(object):
     def __init__(self):
-        self.vectorizer_headline = TfidfVectorizer()
-        self.vectorizer_body = TfidfVectorizer()
+        self.vectorizer = TfidfVectorizer()
 
-    def fit_transform(self, headlines, bodies):
+    def tfidf_cosine_features(self, headlines, bodies,enable):
         """
-        Fits the TF-IDF model to the headlines and bodies and transforms the text into TF-IDF vectors.
-        :param headlines: list of headline texts
-        :param bodies: list of body texts
-        :return: TF-IDF vectors for headlines, bodies, and cosine similarity between each headline and body pair
+        Generates TF-IDF cosine similarity features between headlines and bodies.
+        :param headlines: List of headline texts.
+        :param bodies: List of body texts.
+        :return: List of cosine similarity scores between corresponding headlines and bodies.
         """
-        all_text = headlines + bodies
-        all_vectorizer = TfidfVectorizer().fit(all_text)
+        texts = headlines + bodies
+        self.vectorizer.fit(
+            texts)  # Fit the vectorizer to both headlines and bodies together to ensure a unified feature space.
 
-        # Use the fitted vocabulary to transform the headlines and bodies
-        self.vectorizer_headline.vocabulary_ = all_vectorizer.vocabulary_
-        self.vectorizer_body.vocabulary_ = all_vectorizer.vocabulary_
+        # Transform headlines and bodies into TF-IDF vectors
+        tfidf_headlines = self.vectorizer.transform(headlines)
+        tfidf_bodies = self.vectorizer.transform(bodies)
 
-        tfidf_headlines = self.vectorizer_headline.transform(headlines)
-        tfidf_bodies = self.vectorizer_body.transform(bodies)
+        # Calculate cosine similarities
+        cos_similarities = []
+        for i in tqdm(range(len(headlines)), desc="Computing TF-IDF cosine similarities"):
+            cos_similarity = cosine_similarity(tfidf_headlines[i], tfidf_bodies[i])[0][0]
+            cos_similarities.append([cos_similarity])
 
-        cos_similarities = [cosine_similarity(tfidf_headlines[i], tfidf_bodies[i])[0][0] for i in range(len(headlines))]
-
-        return tfidf_headlines, tfidf_bodies, cos_similarities
-
-    def transform(self, headlines, bodies):
-        """
-        Transforms new headlines and bodies into TF-IDF vectors using the fitted model.
-        :param headlines: list of headline texts
-        :param bodies: list of body texts
-        :return: TF-IDF vectors for headlines, bodies, and cosine similarity between each headline and body pair
-        """
-        tfidf_headlines = self.vectorizer_headline.transform(headlines)
-        tfidf_bodies = self.vectorizer_body.transform(bodies)
-
-        cos_similarities = [cosine_similarity(tfidf_headlines[i], tfidf_bodies[i])[0][0] for i in range(len(headlines))]
-
-        return tfidf_headlines, tfidf_bodies, cos_similarities
+        return np.array(cos_similarities)

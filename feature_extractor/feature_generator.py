@@ -31,6 +31,6 @@ class FeatureGenerator(object):
         X_refuting = gen_or_load_feats(self.refuting_features.refuting_features, h, b, "features/refuting."+self.name+".npy")
         X_polarity = gen_or_load_feats(self.polarity_features.polarity_features, h, b, "features/polarity."+self.name+".npy")
         X_hand = gen_or_load_feats(self.hand_features.hand_features, h, b, "features/hand."+self.name+".npy")
-        # X_tfidf = gen_or_load_feats(self.tfidf_features,h,b,"features/tfidf."+self.name+".npy")
-        X = np.c_[X_hand, X_polarity, X_refuting, X_overlap]
+        X_tfidf = gen_or_load_feats(self.tfidf_features.tfidf_cosine_features,h,b,"features/tfidf."+self.name+".npy")
+        X = np.c_[X_hand, X_polarity, X_refuting, X_overlap,X_tfidf]
         return X,y
