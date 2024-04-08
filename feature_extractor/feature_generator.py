@@ -7,6 +7,7 @@ from feature_extractor.refuting_feature_generator import RefutingFeaturesGenerat
 from feature_extractor.tfidf_feature_generator import TfidfFeatureGenerator
 from feature_extractor.word_overlap_feature_generator import WordOverlapFeaturesGenerator
 from feature_extractor.svd_feature_generator import SvdFeatureGenerator
+from feature_extractor.word_to_vec_feature_generator import Word2VecFeatureGenerator
 
 
 class FeatureGenerator(object):
@@ -20,6 +21,7 @@ class FeatureGenerator(object):
         self.hand_features = HandFeaturesGenerator()
         self.tfidf_features = TfidfFeatureGenerator()
         self.svd_features = SvdFeatureGenerator()
+        self.word2vec_features = Word2VecFeatureGenerator()
 
 
     def generate_features(self):
@@ -36,5 +38,6 @@ class FeatureGenerator(object):
         X_hand = gen_or_load_feats(self.hand_features.hand_features, h, b, "features/hand."+self.name+".npy")
         X_tfidf = gen_or_load_feats(self.tfidf_features.tfidf_cosine_features,h,b,"features/tfidf."+self.name+".npy")
         X_svd = gen_or_load_feats(self.svd_features.fit_transform,h,b,"features/svd."+self.name+".npy")
-        X = np.c_[X_hand, X_polarity, X_refuting, X_overlap, X_tfidf, X_svd]
+        X_word2vec = gen_or_load_feats(self.word2vec_features.generate_features,h,b,"features/word2vec."+self.name+".npy")
+        X = np.c_[X_hand, X_polarity, X_refuting, X_overlap, X_tfidf, X_svd, X_word2vec]
         return X,y
