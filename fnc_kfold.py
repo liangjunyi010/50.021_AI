@@ -2,30 +2,13 @@ import sys
 import numpy as np
 
 from sklearn.ensemble import GradientBoostingClassifier
-from feature_engineering import refuting_features, polarity_features, hand_features, gen_or_load_feats
-from feature_engineering import word_overlap_features
 from utils.dataset import DataSet
 from utils.generate_test_splits import kfold_split, get_stances_for_folds
 from utils.score import report_score, LABELS, score_submission
+from feature_extractor.feature_generator import FeatureGenerator
 
 from utils.system import parse_params, check_version
 
-
-def generate_features(stances,dataset,name):
-    h, b, y = [],[],[]
-
-    for stance in stances:
-        y.append(LABELS.index(stance['Stance']))
-        h.append(stance['Headline'])
-        b.append(dataset.articles[stance['Body ID']])
-
-    X_overlap = gen_or_load_feats(word_overlap_features, h, b, "features/overlap."+name+".npy")
-    X_refuting = gen_or_load_feats(refuting_features, h, b, "features/refuting."+name+".npy")
-    X_polarity = gen_or_load_feats(polarity_features, h, b, "features/polarity."+name+".npy")
-    X_hand = gen_or_load_feats(hand_features, h, b, "features/hand."+name+".npy")
-
-    X = np.c_[X_hand, X_polarity, X_refuting, X_overlap]
-    return X,y
 
 if __name__ == "__main__":
     check_version()
@@ -38,15 +21,18 @@ if __name__ == "__main__":
 
     # Load the competition dataset
     competition_dataset = DataSet("competition_test")
-    X_competition, y_competition = generate_features(competition_dataset.stances, competition_dataset, "competition")
+    fg = FeatureGenerator(competition_dataset.stances, competition_dataset, "competition")
+    X_competition, y_competition = fg.generate_features()
 
     Xs = dict()
     ys = dict()
 
     # Load/Precompute all features now
-    X_holdout,y_holdout = generate_features(hold_out_stances,d,"holdout")
+    fg = FeatureGenerator(hold_out_stances,d,"holdout")
+    X_holdout,y_holdout = fg.generate_features()
     for fold in fold_stances:
-        Xs[fold],ys[fold] = generate_features(fold_stances[fold],d,str(fold))
+        fg = FeatureGenerator(fold_stances[fold],d,str(fold))
+        Xs[fold],ys[fold] = fg.generate_features()
 
 
     best_score = 0
@@ -97,5 +83,3 @@ if __name__ == "__main__":
 
     print("Scores on the test set")
     report_score(actual,predicted)
-
-
