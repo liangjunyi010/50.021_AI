@@ -27,6 +27,8 @@ def remove_stopwords(l):
 
 
 def gen_or_load_feats(feat_fn, headlines, bodies, feature_file, enable=True):
+    if not enable:
+        return np.empty((len(headlines), 0))
     if not os.path.isfile(feature_file):
         feats = feat_fn(headlines, bodies,enable)
         np.save(feature_file, feats)
