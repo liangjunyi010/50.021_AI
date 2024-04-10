@@ -32,21 +32,16 @@ class Word2VecFeatureGenerator(object):
         :param bodies: List of bodies.
         :return: Cosine similarities between the Word2Vec features of headlines and bodies.
         """
-        # 计算每个标题的向量表示
+
         headline_vectors = np.array([self.document_vector(doc.split()) for doc in headlines])
-        # 计算每个正文的向量表示
+
         body_vectors = np.array([self.document_vector(doc.split()) for doc in bodies])
 
-        # 初始化余弦相似度数组
         cosine_similarities = np.zeros(len(headline_vectors))
 
-        # 对于每一对标题和正文向量，计算它们之间的余弦相似度
         for i, (h_vec, b_vec) in enumerate(zip(headline_vectors, body_vectors)):
-            # 重塑向量以匹配cosine_similarity函数的期望输入
             h_vec_reshaped = h_vec.reshape(1, -1)
             b_vec_reshaped = b_vec.reshape(1, -1)
-            # 计算余弦相似度并存储结果
             cosine_similarities[i] = cosine_similarity(h_vec_reshaped, b_vec_reshaped)
 
-        # 重塑结果数组以匹配期望的输出格式
         return cosine_similarities.reshape(-1, 1)

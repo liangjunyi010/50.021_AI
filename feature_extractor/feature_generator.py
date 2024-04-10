@@ -34,13 +34,13 @@ class FeatureGenerator(object):
             h.append(stance['Headline'])
             b.append(self.dataset.articles[stance['Body ID']])
 
-        X_overlap = gen_or_load_feats(self.word_overlap_features.word_overlap_features, h, b, "features/overlap."+self.name+".npy", False)
+        X_overlap = gen_or_load_feats(self.word_overlap_features.word_overlap_features, h, b, "features/overlap."+self.name+".npy" )
         X_refuting = gen_or_load_feats(self.refuting_features.refuting_features, h, b, "features/refuting."+self.name+".npy")
         X_polarity = gen_or_load_feats(self.polarity_features.polarity_features, h, b, "features/polarity."+self.name+".npy")
         X_hand = gen_or_load_feats(self.hand_features.hand_features, h, b, "features/hand."+self.name+".npy")
         X_tfidf = gen_or_load_feats(self.tfidf_features.tfidf_cosine_features,h,b,"features/tfidf."+self.name+".npy")
         X_svd = gen_or_load_feats(self.svd_features.fit_transform,h,b,"features/svd."+self.name+".npy")
         X_word2vec = gen_or_load_feats(self.word2vec_features.generate_features,h,b,"features/word2vec."+self.name+".npy")
-        X_sentiment = gen_or_load_feats(self.sentiment_features.generate_features,h,b,"features/sentiment."+self.name+".npy")
+        X_sentiment = gen_or_load_feats(self.sentiment_features.generate_features,h,b,"features/sentiment."+self.name+".npy",False)
         X = np.c_[X_hand, X_polarity, X_refuting, X_overlap, X_tfidf, X_svd, X_word2vec, X_sentiment]
         return X,y

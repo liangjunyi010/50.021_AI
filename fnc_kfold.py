@@ -6,6 +6,7 @@ from utils.dataset import DataSet
 from utils.generate_test_splits import kfold_split, get_stances_for_folds
 from utils.score import report_score, LABELS, score_submission
 from feature_extractor.feature_generator import FeatureGenerator
+from imblearn.over_sampling import SMOTE
 
 from utils.system import parse_params, check_version
 
@@ -46,6 +47,9 @@ if __name__ == "__main__":
 
         X_train = np.vstack(tuple([Xs[i] for i in ids]))
         y_train = np.hstack(tuple([ys[i] for i in ids]))
+
+        smote = SMOTE()
+        X_train, y_train = smote.fit_resample(X_train, y_train)
 
         X_test = Xs[fold]
         y_test = ys[fold]
