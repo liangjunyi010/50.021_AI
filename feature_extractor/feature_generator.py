@@ -34,7 +34,7 @@ class FeatureGenerator(object):
             h.append(stance['Headline'])
             b.append(self.dataset.articles[stance['Body ID']])
 
-        X_overlap = gen_or_load_feats(self.word_overlap_features.word_overlap_features, h, b, "features/overlap."+self.name+".npy" )
+        X_overlap = gen_or_load_feats(self.word_overlap_features.word_overlap_features, h, b, "features/overlap."+self.name+".npy")
         X_refuting = gen_or_load_feats(self.refuting_features.refuting_features, h, b, "features/refuting."+self.name+".npy")
         X_polarity = gen_or_load_feats(self.polarity_features.polarity_features, h, b, "features/polarity."+self.name+".npy")
         X_hand = gen_or_load_feats(self.hand_features.hand_features, h, b, "features/hand."+self.name+".npy")
