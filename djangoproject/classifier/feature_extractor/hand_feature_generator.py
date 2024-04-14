@@ -1,5 +1,5 @@
 
-from feature_extractor.data_preprocessing import clean,remove_stopwords
+from .data_preprocessing import clean,remove_stopwords
 from tqdm import tqdm
 import numpy as np
 

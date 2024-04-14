@@ -7,7 +7,7 @@ from utils.generate_test_splits import kfold_split, get_stances_for_folds
 from utils.score import report_score, LABELS, score_submission
 from feature_extractor.feature_generator import FeatureGenerator
 from imblearn.over_sampling import SMOTE
-
+from joblib import dump, load
 from utils.system import parse_params, check_version
 
 
@@ -79,6 +79,7 @@ if __name__ == "__main__":
         if score > best_score:
             best_score = score
             best_fold = clf
+            dump(best_fold, 'model/best_model.joblib')
 
 
 

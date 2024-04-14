@@ -1,4 +1,4 @@
-from feature_extractor.data_preprocessing import clean,get_tokenized_lemmas
+from .data_preprocessing import clean,get_tokenized_lemmas
 from tqdm import tqdm
 import numpy as np
 

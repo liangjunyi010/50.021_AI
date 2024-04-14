@@ -1,5 +1,5 @@
 from tqdm import tqdm
-from feature_extractor.data_preprocessing import clean,get_tokenized_lemmas
+from .data_preprocessing import clean,get_tokenized_lemmas
 
 class WordOverlapFeaturesGenerator(object):
     def word_overlap_features(self,headlines, bodies,enable=None):

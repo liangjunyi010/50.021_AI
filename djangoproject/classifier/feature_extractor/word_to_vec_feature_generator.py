@@ -4,7 +4,7 @@ from sklearn.metrics.pairwise import cosine_similarity
 
 
 class Word2VecFeatureGenerator(object):
-    def __init__(self, model_path='./google_model/GoogleNews-vectors-negative300.bin'):
+    def __init__(self, model_path='/home/liangjunyi/GitHub/50.021_AI/google_model/GoogleNews-vectors-negative300.bin'):
         """
         Initialize the feature generator with a pre-trained Word2Vec model.
         :param model_path: Path to the pre-trained Word2Vec model.

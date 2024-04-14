@@ -1,16 +1,16 @@
-from utils.score import LABELS
+
 import numpy as np
-from feature_extractor.data_preprocessing import gen_or_load_feats
-from feature_extractor.hand_feature_generator import HandFeaturesGenerator
-from feature_extractor.polarity_feature_generator import PolarityFeaturesGenerator
-from feature_extractor.refuting_feature_generator import RefutingFeaturesGenerator
-from feature_extractor.tfidf_feature_generator import TfidfFeatureGenerator
-from feature_extractor.word_overlap_feature_generator import WordOverlapFeaturesGenerator
-from feature_extractor.svd_feature_generator import SvdFeatureGenerator
-from feature_extractor.word_to_vec_feature_generator import Word2VecFeatureGenerator
-from feature_extractor.sentiment_feature import SentimentFeatureGenerator
+from .data_preprocessing import gen_or_load_feats
+from .hand_feature_generator import HandFeaturesGenerator
+from .polarity_feature_generator import PolarityFeaturesGenerator
+from .refuting_feature_generator import RefutingFeaturesGenerator
+from .tfidf_feature_generator import TfidfFeatureGenerator
+from .word_overlap_feature_generator import WordOverlapFeaturesGenerator
+from .svd_feature_generator import SvdFeatureGenerator
+from .word_to_vec_feature_generator import Word2VecFeatureGenerator
+from .sentiment_feature import SentimentFeatureGenerator
 
-
+LABELS = ['agree', 'disagree', 'discuss', 'unrelated']
 class FeatureGenerator(object):
     def __init__(self,stances,dataset,name):
         self.stances = stances
