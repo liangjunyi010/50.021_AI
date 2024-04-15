@@ -6,15 +6,25 @@ from utils.score import report_score, LABELS, score_submission
 from feature_extractor.feature_generator import FeatureGenerator
 from utils.system import parse_params, check_version
 
+# Merged parameters from the first code snippet
+params_xgb = {
+    'max_depth': 6,
+    'colsample_bytree': 0.6,
+    'subsample': 1.0,
+    'eta': 0.1,
+    'silent': 1,
+    'objective': 'multi:softmax',
+    'eval_metric':'mlogloss',
+    'num_class': 4
+}
+
 if __name__ == "__main__":
     check_version()
     parse_params()
 
-
     d = DataSet()
     folds, hold_out = kfold_split(d, n_folds=10)
     fold_stances, hold_out_stances = get_stances_for_folds(d, folds, hold_out)
-
 
     competition_dataset = DataSet("competition_test")
     fg = FeatureGenerator(competition_dataset.stances, competition_dataset, "competition")
@@ -22,7 +32,6 @@ if __name__ == "__main__":
 
     Xs = dict()
     ys = dict()
-
 
     fg = FeatureGenerator(hold_out_stances, d, "holdout")
     X_holdout, y_holdout = fg.generate_features()
@@ -32,7 +41,6 @@ if __name__ == "__main__":
 
     best_score = 0
     best_fold = None
-
 
     for fold in fold_stances:
         ids = list(range(len(folds)))
@@ -44,8 +52,8 @@ if __name__ == "__main__":
         X_test = Xs[fold]
         y_test = ys[fold]
 
-
-        clf = XGBClassifier(n_estimators=200, random_state=14128, verbosity=1, use_label_encoder=False, eval_metric='mlogloss')
+        # Using the merged parameters for the XGBClassifier instance
+        clf = XGBClassifier(**params_xgb, n_estimators=200, random_state=14128, verbosity=1, use_label_encoder=False)
         clf.fit(X_train, y_train)
 
         predicted = [LABELS[int(a)] for a in clf.predict(X_test)]
@@ -56,11 +64,10 @@ if __name__ == "__main__":
 
         score = fold_score / max_fold_score
 
-        print("折叠 "+ str(fold) + " 的分数是 - " + str(score))
+        print("折叠 " + str(fold) + " 的分数是 - " + str(score))
         if score > best_score:
             best_score = score
             best_fold = clf
-
 
     predicted = [LABELS[int(a)] for a in best_fold.predict(X_holdout)]
     actual = [LABELS[int(a)] for a in y_holdout]
