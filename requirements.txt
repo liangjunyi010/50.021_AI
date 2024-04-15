@@ -4,5 +4,9 @@ numpy
 scipy
 nltk
 imbalanced-learn
+gensim
 django
 joblib
+lightgbm
+catboost
+xgboost
