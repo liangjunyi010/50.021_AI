@@ -52,7 +52,7 @@ if __name__ == "__main__":
         y_test = ys[fold]
 
         # Initialize SVM classifier
-        clf = SVC(probability=True, kernel='linear', random_state=14128)
+        clf = SVC(probability=True, kernel='rbf', random_state=14128)
 
         clf.fit(X_train, y_train)
 
