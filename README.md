@@ -1,85 +1,92 @@
-# Baseline FNC implementation
+## 50.021 AI FNC-1
+### **Prerequisites:**
 
-Information about the fake news challenge can be found on [FakeChallenge.org](http://fakenewschallenge.org).
+- Python 3.x
+- Access to a terminal or command-line interface
 
-This repository contains code that reads the dataset, extracts some simple features, trains a cross-validated model and
-performs an evaluation on a hold-out set of data.
+### **Initial Setup:**
 
-## Getting Started
-The FNC dataset is inlcuded as a submodule and can be FNC Dataset is included as a submodule. You should download the fnc-1 dataset by running the following commands. This places the fnc-1 dataset into the folder fnc-1/
+1. **Clone the Repository:**
 
-    git submodule init
-    git submodule update
+   - Begin by cloning the project repository from GitHub to your local machine:
 
-## Useful functions
-### dataset class
-The dataset class reads the FNC-1 dataset and loads the stances and article bodies into two separate containers.
+   - ```shell
+     git clone https://github.com/liangjunyi010/50.021_AI.git
+     ```
 
-    dataset = DataSet()
-
-You can access these through the ``.stances`` and ``.articles`` variables
-
-    print("Total stances: " + str(len(dataset.stances)))
-    print("Total article bodies: " + str(len(dataset.articles)))
-
-* ``.articles`` is a dictionary of articles, indexed by the body id. For example, the text from the 144th article can be printed with the following command:
-   ``print(dataset.articles[144])``
-
-### Hold-out set split
-Data is split using the ``generate_hold_out_split()`` function. This function ensures that the article bodies between the training set are not present in the hold-out set. This accepts the following arguments. The body IDs are written to disk.
-
-* ``dataset`` - a dataset class that contains the articles and bodies
-* ``training=0.8`` - the percentage of data used for the training set (``1-training`` is used for the hold-out set)
-* ``base_dir="splits/"``- the directory in which the ids are to be written to disk
+   - Or, unzip our code folder in our submitted compressed file.
 
 
-### k-fold split
-The training set is split into ``k`` folds using the ``kfold_split`` function. This reads the holdout/training split from the disk and generates it if the split is not present.
+2. **Install Required Packages:**
 
-* ``dataset`` - dataset reader
-* ``training = 0.8`` - passed to the hold-out split generation function
-* ``n_folds = 10`` - number of folds
-* ``base_dir="splits"`` - directory to read dataset splits from or write to
+   - Navigate to the root directory of the project and install the required Python packages using the following command:
 
-This returns 2 items: a array of arrays that contain the ids for stances for each fold, an array that contains the holdout stance IDs.
-
-### Getting headline/stance from IDs
-The ``get_stances_for_folds`` function returns the stances from the original dataset. See ``fnc_kfold.py`` for example usage.
+   - ```shell
+     pip install -r requirements.txt
+     ```
 
 
+3. **Download Additional Resources:**
 
-## Scoring Your Classifier
+   - Execute the following command to download the VADER lexicon for sentiment analysis:
 
-The ``report_score`` function in ``utils/score.py`` is based off the original scorer provided in the FNC-1 dataset repository written by @bgalbraith.
+   - ```python
+     python -m nltk.downloader vader_lexicon
+     ```
 
-``report_score`` expects 2 parameters. A list of actual stances (i.e. from the dev dataset), and a list of predicted stances (i.e. what you classifier predicts on the dev dataset). In addition to computing the score, it will also print the score as a percentage of the max score given any set of gold-standard data (such as from a  fold or from the hold-out set).
+   - Download the pre-trained Google Word2Vec model from the following link: https://drive.google.com/file/d/0B7XkCwpI5KDYNlNUTTlSS21pQmM/edit?pli=1&resourcekey=0-wjGZdNAUop6WykTtMip30g After downloading, extract the `.bin` file and place it in the `google_model` directory within your project.
 
-    predicted = ['unrelated','discuss',...]
-    actual = [stance['Stance'] for stance in holdout_stances]
+### **Configuring Paths:**
 
-    report_score(actual, predicted)
+**Update Model Path in** **predict.py**
 
-This will print a confusion matrix and a final score your classifier. We provide the scores for a classifier with a simple set of features which you should be able to match and eventually beat!
+Modify the path in `predict.py` to point to the `best_model.joblib` file within your project's model directory. Replace the existing path with your absolute path.
 
-## Results
+```
+model = load('path_to_project_root/model/best_model.joblib')
+```
 
-### Competition dataset (leaderboard score )
-|               | agree         | disagree      | discuss       | unrelated     |
-|-----------    |-------        |----------     |---------      |-----------    |
-|   agree       |    173        |     10        |   1435        |   28          |
-| disagree      |    39         |     7         |   413         |   238         |
-|  discuss      |    221        |     7         |   3556        |   680         |
-| unrelated     |    10         |     3         |   358         |   17978       |
-Score: 8761.75 out of 11651.25     (75.20%)
+**Update Word2Vec Model Path:**
 
+In the file `word_to_vec_feature_generator.py` within the feature_extractor directory, change the `model_path` parameter in the __init__ method to the absolute path of the `GoogleNews-vectors-negative300.bin` file.
 
-### Hold-out split (for development)
+```python
+def __init__(self, model_path='path_to_project_root/google_model/GoogleNews-vectors-negative300.bin'):
+```
 
+### **Running the Application:**
 
-|               | agree         | disagree      | discuss       | unrelated     |
-|-----------    |-------        |----------     |---------      |-----------    |
-|   agree       |    118        |     3         |    556        |    85         |
-| disagree      |    14         |     3         |    130        |    15         |
-|  discuss      |    58         |     5         |   1527        |    210        |
-| unrelated     |     5         |     1         |    98         |   6794        |
-Score: 3538.0 out of 4448.5	(79.53%)
+**Database Migrations:**
+
+Make sure you are in the djangoproject directory and execute the following commands to prepare the database:
+
+```python
+python manage.py makemigrations
+python manage.py migrate
+```
+
+**Start the Server:**
+
+Run the Django development server using the command:
+
+```python
+python manage.py runserver 8000
+```
+
+**Access the Application:**
+
+Open a web browser and go to http://127.0.0.1:8000/ to view and interact with the GUI.
+
+### **Updating the Model:**
+
+**Re-train the Model (Optional):**
+
+If you wish to re-train the model with new data or tweaks, navigate back to the project root directory (50.021_AI) and execute the following command:
+
+```python
+python fnc_kfold.py
+```
+
+Wait for the process to complete before attempting to use the updated model.
+
+After following these steps, your News Relationship Classifier should be up and running, ready for you to analyze the relationship between news headlines and their corresponding body text.
